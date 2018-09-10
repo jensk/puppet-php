@@ -111,7 +111,10 @@ define php::extension::config (
       }
       if has_key($final_settings, 'extension') and $final_settings[extension] {
         exec { $cmd:
-          onlyif  => "${ext_tool_query} -s ${_sapi} -m ${so_name} | /bin/grep 'No module matches ${so_name}'",
+          onlyif  => [
+            "/usr/bin/test -f /usr/sbin/phpquery",
+            "${ext_tool_query} -s ${_sapi} -m ${so_name} | /bin/grep 'No module matches ${so_name}'",
+          ],
           require => ::Php::Config[$title],
         }
 
